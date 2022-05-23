@@ -29,6 +29,8 @@ function TenantHome() {
 
   const [houseDetails, setHouseDetails] = useState([]);
 
+  const [bookedHouse, setBookedHouse] = useState([]);
+
   const [report, setReport] = useState([
     {
       approved: 0,
@@ -73,6 +75,9 @@ function TenantHome() {
           approved: approvedHouse.length,
           notApproved: needAprovalHouse.length,
         });
+
+        // //House Booked by User
+        // const houseBookedByUser = response.data.houseDetails.requestUserDetails.filter((item))
       }
     } catch (error) {
       //console.error({ error });

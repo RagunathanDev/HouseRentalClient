@@ -22,7 +22,11 @@ const userRoles = [
 function CreateUser() {
   const navigate = useNavigate();
 
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -30,6 +34,7 @@ function CreateUser() {
     aadhaar: "",
     role: "Tenanet",
     password: "",
+    confirmPassword: "",
   });
 
   const loginForm = async () => {
@@ -44,6 +49,11 @@ function CreateUser() {
       };
       //console.log(JSON.stringify(userData));
 
+      if (!(data.password === data.confirmPassword)) {
+        alert("Password Mismatch");
+        return false;
+      }
+
       const response = await axios.post(
         "user/createUser",
         JSON.stringify(userData),
@@ -57,8 +67,8 @@ function CreateUser() {
         navigate("/");
       }
       //console.log(response.data);
-    } catch (exception) {
-      //console.log(`Erorr Occured ${exception}`);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -108,7 +118,11 @@ function CreateUser() {
               <Label>
                 <LabelName>Aadhaar</LabelName>
                 <input
-                  {...register("aadhaar", { required: true, maxLength: 20 })}
+                  {...register("aadhaar", {
+                    required: true,
+                    minLength: 8,
+                    maxLength: 20,
+                  })}
                   value={data.aadhaar}
                   onChange={(e) =>
                     setData({ ...data, aadhaar: e.target.value })
@@ -121,7 +135,11 @@ function CreateUser() {
               <Label>
                 <LabelName>Password</LabelName>
                 <input
-                  {...register("password", { required: true, maxLength: 20 })}
+                  {...register("password", {
+                    required: true,
+                    minLength: 8,
+                    maxLength: 20,
+                  })}
                   value={data.password}
                   onChange={(e) =>
                     setData({ ...data, password: e.target.value })
@@ -134,8 +152,15 @@ function CreateUser() {
               <Label>
                 <LabelName>Confirm Password</LabelName>
                 <input
-                  {...register("password", { required: true, maxLength: 20 })}
-                  value={data.password}
+                  {...register("confirmPassword", {
+                    required: true,
+                    minLength: 8,
+                    maxLength: 20,
+                  })}
+                  value={data.confirmPassword}
+                  onChange={(e) =>
+                    setData({ ...data, confirmPassword: e.target.value })
+                  }
                   type="password"
                 />
               </Label>

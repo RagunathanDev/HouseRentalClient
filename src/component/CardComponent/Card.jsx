@@ -5,17 +5,30 @@ import styled from "styled-components";
 import "./CardsStyle.css";
 
 function Card({ house, user, removeHouseDetail, updateRequest }) {
-  const requestUpdate = () => {
+  const requestUpdate = (id) => {
     house.requestUserDetails.forEach((item) => {
-      if (item.userId === user.userId) item.ownerApproval = true;
+      if (item.userId === id) item.ownerApproval = true;
     });
     ////console.log(house);
-    house.houseBookedStatus = true;
 
+    //Find index of specific object using findIndex method.
+
+    // const objIndex = house.requestUserDetails.findIndex(
+    //   (item) => item.userId === id
+    // );
+    // console.log(objIndex);
+    // //Log object to Console.
+    // console.log("Before update: ", house.requestUserDetails[objIndex]);
+
+    // //Update object's ownerApproval property.
+    // house.requestUserDetails[objIndex].ownerApproval = true;
+
+    house.houseBookedStatus = true;
+    console.log("Aproved House" + JSON.stringify(house));
     updateRequest(house._id, house);
   };
 
-  const [disable, setDisable] = useState(house.houseBookedStatus);
+  //const [disable, setDisable] = useState(house.houseBookedStatus);
 
   return (
     <MainContainer>
@@ -54,6 +67,12 @@ function Card({ house, user, removeHouseDetail, updateRequest }) {
             </SmallCard>
           </Cards>
           <Border></Border>
+          <Cards>
+            <SmallCard>
+              <Titles>House Booked:</Titles>
+              <Values>{house.houseBookedStatus ? "Yes" : "No"}</Values>
+            </SmallCard>
+          </Cards>
         </CardConatiner>
         {"Owner" === user.role && (
           <PeopleContainer>
@@ -73,9 +92,13 @@ function Card({ house, user, removeHouseDetail, updateRequest }) {
             <button
               onClick={() => {
                 if ("Owner" === user.role) {
-                  removeHouseDetail(house._id);
+                  if (house.houseBookedStatus === false)
+                    removeHouseDetail(house._id);
+                  else alert("Can't remove House Booked");
                 } else if ("Admin" === user.role) {
-                  removeHouseDetail(house._id, !house.adminApproval);
+                  if (house.houseBookedStatus === false)
+                    removeHouseDetail(house._id, !house.adminApproval);
+                  else alert("Can't remove House Booked");
                 } else {
                   const userData = {
                     userId: user.userId,
@@ -142,7 +165,10 @@ function Card({ house, user, removeHouseDetail, updateRequest }) {
                   <Values>Email: </Values>
                   {item.email}
                 </label>
-                <button onClick={() => requestUpdate()} disabled={disable}>
+                <button
+                  onClick={() => requestUpdate(item.userId)}
+                  disabled={house.houseBookedStatus}
+                >
                   Approve
                 </button>
               </UserContainerV>

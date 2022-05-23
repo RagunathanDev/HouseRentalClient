@@ -144,6 +144,7 @@ function AddDetails() {
         }
       );
       if (response.status === 200 && response.data !== null) {
+        alert("Approve");
         fetchHouseDetails();
         navigate("/owner/addDetails");
       }
@@ -153,7 +154,7 @@ function AddDetails() {
           : "Failed to Approve "
       );
     } catch (error) {
-      //console.error(error);
+      console.error(error);
     }
   };
 
